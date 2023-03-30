@@ -9,16 +9,14 @@ def available(request):
     check_out = request.GET['check_out']
     building = request.GET['building']
     filter_days = BlockedDay.objects.filter(day__lte=check_out, day__gte=check_in).values("room_id")
-    h=[]
+    h = []
     if not filter_days:
         building_names = Building.objects.filter(name=building).values()
         for build in building_names:
             room_types = RoomType.objects.filter(building=build.get('id')).values("id", "name", "type")
             if room_types:
                 for room in room_types:
-                    room_type_data = helper(room)
-                    h.append(room_type_data)
-
+                    h = helper(room)
         return JsonResponse(h, safe=False)
     else:
         return HttpResponse("These days are blocked")
@@ -33,4 +31,3 @@ def helper(room_type):
         room.update(room_type)
         room_date.append(room)
     return room_date
-
